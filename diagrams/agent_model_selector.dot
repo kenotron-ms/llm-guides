@@ -1,94 +1,94 @@
 digraph agent_model_selector {
-    // ── Graph globals ──────────────────────────────────────────────────────────
+    // ── Graph globals ─────────────────────────────────────────────────────────
     label    = "Agent Model Selector"
     labelloc = t
     rankdir  = TB
     fontname = "Helvetica"
     fontsize = 14
-    bgcolor  = "#FFFFFF"
+    bgcolor  = "#ffffff"
     nodesep  = 0.55
     ranksep  = 0.70
 
-    // ── Default styles ─────────────────────────────────────────────────────────
+    // ── Default styles ────────────────────────────────────────────────────────
     node [fontname="Helvetica" fontsize=12 style="rounded,filled"
-          fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E" penwidth=1.5]
-    edge [fontname="Helvetica" fontsize=10 color="#455A64" arrowsize=0.85 penwidth=1.3]
+          fillcolor="#fafafa" color="#d4d4d8" fontcolor="#09090b" penwidth=1.5]
+    edge [fontname="Helvetica" fontsize=10 color="#a1a1aa" arrowsize=0.8 penwidth=1.2]
 
-    // ── Entry ──────────────────────────────────────────────────────────────────
+    // ── Entry ─────────────────────────────────────────────────────────────────
     start [label="Agent task type?"
-           shape=ellipse fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
+           shape=ellipse fillcolor="#f4f4f5" color="#09090b" fontcolor="#09090b" penwidth=2.0]
 
-    // ── Decisions ──────────────────────────────────────────────────────────────
+    // ── Decisions ─────────────────────────────────────────────────────────────
     d_code   [label="Agentic coding?"
-              shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+              shape=diamond fillcolor="#f4f4f5" color="#71717a" fontcolor="#09090b"]
     d_reason [label="Deep reasoning\nor math?"
-              shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
-    d_think  [label="Thinking mode\nrequired?"
-              shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+              shape=diamond fillcolor="#f4f4f5" color="#71717a" fontcolor="#09090b"]
+    d_budget [label="Can afford\nslower inference?"
+              shape=diamond fillcolor="#f4f4f5" color="#71717a" fontcolor="#09090b"]
     d_vision [label="Vision /\nmultimodal?"
-              shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+              shape=diamond fillcolor="#f4f4f5" color="#71717a" fontcolor="#09090b"]
     d_ram    [label="RAM \u2264 8 GB?"
-              shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+              shape=diamond fillcolor="#f4f4f5" color="#71717a" fontcolor="#09090b"]
 
-    // ── Model recommendations ──────────────────────────────────────────────────
+    // ── Model recommendations ─────────────────────────────────────────────────
     // Coding specialist — top pick
     m_q36  [label="Qwen3.6 35B-A3B\nSWE-bench 73.4%  \u00b7  Thinking ON"
-             fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
+             fillcolor="#dbeafe" color="#2563eb" fontcolor="#09090b"]
 
-    // Thinking / reasoning models
+    // Thinking / reasoning — top pick
     m_q35t [label="Qwen3.5 35B-A3B or 27B\nThinking ON"
-             fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
+             fillcolor="#dbeafe" color="#2563eb" fontcolor="#09090b"]
 
-    // General-purpose MoE
-    m_g4   [label="Gemma 4 26B-A4B or 31B"
-             fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+    // General-purpose MoE (standard)
+    m_g4   [label="Gemma 4 26B-A4B or 31B"]
 
-    // Vision-capable
-    m_g4v  [label="Gemma 4 26B-A4B  or\nQwen3.5 27B  (vision via mmproj)"
-             fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+    // Vision-capable (standard)
+    m_g4v  [label="Gemma 4 26B-A4B  or\nQwen3.5 27B  (vision via mmproj)"]
 
     // Edge / RAM-constrained
-    m_g4e  [label="Gemma 4 E4B\nAudio on E2B / E4B"
-             fillcolor="#F3E5F5" color="#6A1B9A" fontcolor="#4A148C"]
+    m_g4e  [label="Gemma 4 E4B"
+             fillcolor="#ede9fe" color="#7c3aed" fontcolor="#09090b"]
 
-    // ── Edges ──────────────────────────────────────────────────────────────────
+    // Audio capability annotation
+    note_audio [label="Audio supported\non E2B / E4B"
+                shape=note style="filled"
+                fillcolor="#f9fafb" color="#d4d4d8" fontcolor="#71717a" fontsize=10]
+
+    // ── Edges ─────────────────────────────────────────────────────────────────
     start    -> d_code
-    d_code   -> m_q36  [label="Yes"]
+    d_code   -> m_q36   [label="Yes"]
     d_code   -> d_reason [label="No"]
-    d_reason -> d_think  [label="Yes"]
-    d_think  -> m_q35t [label="Required"]
-    d_think  -> m_g4   [label="Not needed"]
+    d_reason -> d_budget [label="Yes"]
+    d_budget -> m_q35t  [label="Yes"]
+    d_budget -> m_g4    [label="No"]
     d_reason -> d_vision [label="No"]
-    d_vision -> m_g4v  [label="Yes"]
-    d_vision -> d_ram  [label="No"]
-    d_ram    -> m_g4e  [label="Yes"]
-    d_ram    -> m_g4   [label="No"]
+    d_vision -> m_g4v   [label="Yes"]
+    d_vision -> d_ram   [label="No"]
+    d_ram    -> m_g4e   [label="Yes"]
+    d_ram    -> m_g4    [label="No"]
 
-    // ── Legend ─────────────────────────────────────────────────────────────────
+    // Audio annotation — dashed, no arrowhead
+    m_g4e -> note_audio [style=dashed arrowhead=none color="#d4d4d8" penwidth=1.0]
+
+    // ── Legend ────────────────────────────────────────────────────────────────
     subgraph cluster_legend {
         label     = "Legend"
         style     = "rounded,filled"
-        fillcolor = "#F5F5F5"
-        color     = "#B0BEC5"
+        fillcolor = "#f9fafb"
+        color     = "#d4d4d8"
         fontname  = "Helvetica"
         fontsize  = 11
 
-        node [width=1.9 height=0.38 margin="0.12,0.07"]
+        node [width=2.2 height=0.38 margin="0.12,0.07"]
 
-        lg_entry [label="Entry"            shape=ellipse
-                  fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
-        lg_dec   [label="Decision"         shape=diamond
-                  fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
-        lg_top   [label="Top / specialist pick"
-                  fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
-        lg_std   [label="General pick"
-                  fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
-        lg_edge  [label="Edge / low-RAM pick"
-                  fillcolor="#F3E5F5" color="#6A1B9A" fontcolor="#4A148C"]
+        lg_top  [label="Top specialist pick \u2014 benchmark-backed"
+                 fillcolor="#dbeafe" color="#2563eb" fontcolor="#09090b"]
+        lg_std  [label="General-purpose pick"
+                 fillcolor="#fafafa" color="#d4d4d8" fontcolor="#09090b"]
+        lg_edge [label="Edge / RAM-constrained pick"
+                 fillcolor="#ede9fe" color="#7c3aed" fontcolor="#09090b"]
 
-        lg_entry -> lg_dec  [style=invis]
-        lg_dec   -> lg_top  [style=invis]
-        lg_top   -> lg_std  [style=invis]
-        lg_std   -> lg_edge [style=invis]
+        lg_top  -> lg_std  [style=invis]
+        lg_std  -> lg_edge [style=invis]
     }
 }

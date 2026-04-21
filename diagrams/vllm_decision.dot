@@ -1,74 +1,65 @@
 digraph vllm_decision {
-    // ── Graph globals ──────────────────────────────────────────────────────────
-    label    = "vLLM vs llama.cpp \u2014 Server Selection"
+    // ── Graph globals ─────────────────────────────────────────────────────────
+    label    = "vLLM vs llama.cpp \u2014 Serving Decision"
     labelloc = t
     rankdir  = TB
     fontname = "Helvetica"
     fontsize = 14
-    bgcolor  = "#FFFFFF"
+    bgcolor  = "#ffffff"
     nodesep  = 0.55
     ranksep  = 0.70
 
-    // ── Default styles ─────────────────────────────────────────────────────────
+    // ── Default styles ────────────────────────────────────────────────────────
     node [fontname="Helvetica" fontsize=12 style="rounded,filled"
-          fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E" penwidth=1.5]
-    edge [fontname="Helvetica" fontsize=10 color="#455A64" arrowsize=0.85 penwidth=1.3]
+          fillcolor="#fafafa" color="#d4d4d8" fontcolor="#09090b" penwidth=1.5]
+    edge [fontname="Helvetica" fontsize=10 color="#a1a1aa" arrowsize=0.8 penwidth=1.2]
 
-    // ── Entry ──────────────────────────────────────────────────────────────────
+    // ── Entry ─────────────────────────────────────────────────────────────────
     start [label="Need an LLM server?"
-           shape=ellipse fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
+           shape=ellipse fillcolor="#f4f4f5" color="#09090b" fontcolor="#09090b" penwidth=2.0]
 
-    // ── Decisions ──────────────────────────────────────────────────────────────
+    // ── Decisions ─────────────────────────────────────────────────────────────
     d_concur [label="Multiple concurrent\nusers?"
-              shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
-    d_gpu    [label="GPU type?"
-              shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+              shape=diamond fillcolor="#f4f4f5" color="#71717a" fontcolor="#09090b"]
+    d_gpu    [label="CUDA / ROCm\nproduction GPU?"
+              shape=diamond fillcolor="#f4f4f5" color="#71717a" fontcolor="#09090b"]
     d_thru   [label="Max throughput /\nbatching needed?"
-              shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+              shape=diamond fillcolor="#f4f4f5" color="#71717a" fontcolor="#09090b"]
     d_gguf   [label="GGUF quantized\nmodel?"
-              shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+              shape=diamond fillcolor="#f4f4f5" color="#71717a" fontcolor="#09090b"]
 
-    // ── Backend results ────────────────────────────────────────────────────────
+    // ── Backend results ───────────────────────────────────────────────────────
     vl [label="vLLM"
-        fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
-    lc [label="llama.cpp"
-        fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+        fillcolor="#dbeafe" color="#2563eb" fontcolor="#09090b"]
+    lc [label="llama.cpp"]
 
-    // ── Edges ──────────────────────────────────────────────────────────────────
+    // ── Edges ─────────────────────────────────────────────────────────────────
     start    -> d_concur
     d_concur -> d_gpu  [label="Yes"]
-    d_gpu    -> vl     [label="NVIDIA CUDA"]
-    d_gpu    -> vl     [label="AMD MI300X+"]
-    d_gpu    -> lc     [label="Consumer AMD RX"]
-    d_gpu    -> lc     [label="Apple Silicon"]
+    d_gpu    -> vl     [label="Yes"]
+    d_gpu    -> lc     [label="No"]
     d_concur -> d_thru [label="No"]
     d_thru   -> vl     [label="Yes"]
     d_thru   -> d_gguf [label="No"]
     d_gguf   -> lc     [label="Yes \u2014 GGUF model"]
     d_gguf   -> vl     [label="No \u2014 BF16 / FP8"]
 
-    // ── Legend ─────────────────────────────────────────────────────────────────
+    // ── Legend ────────────────────────────────────────────────────────────────
     subgraph cluster_legend {
         label     = "Legend"
         style     = "rounded,filled"
-        fillcolor = "#F5F5F5"
-        color     = "#B0BEC5"
+        fillcolor = "#f9fafb"
+        color     = "#d4d4d8"
         fontname  = "Helvetica"
         fontsize  = 11
 
-        node [width=1.7 height=0.38 margin="0.12,0.07"]
+        node [width=2.4 height=0.38 margin="0.12,0.07"]
 
-        lg_entry [label="Entry"              shape=ellipse
-                  fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
-        lg_dec   [label="Decision"           shape=diamond
-                  fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
-        lg_best  [label="Recommended server"
-                  fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
-        lg_std   [label="Standard server"
-                  fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+        lg_vllm [label="vLLM \u2014 production multi-user serving"
+                 fillcolor="#dbeafe" color="#2563eb" fontcolor="#09090b"]
+        lg_lc   [label="llama.cpp \u2014 single-user / GGUF / edge"
+                 fillcolor="#fafafa" color="#d4d4d8" fontcolor="#09090b"]
 
-        lg_entry -> lg_dec  [style=invis]
-        lg_dec   -> lg_best [style=invis]
-        lg_best  -> lg_std  [style=invis]
+        lg_vllm -> lg_lc [style=invis]
     }
 }

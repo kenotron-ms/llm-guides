@@ -1,82 +1,112 @@
 digraph rocm_backend {
-    // ── Graph globals ──────────────────────────────────────────────────────────
+    // ── Graph globals ─────────────────────────────────────────────────────────
     label    = "AMD GPU \u2014 ROCm Backend Support Matrix"
     labelloc = t
-    rankdir  = TB
+    rankdir  = LR
     fontname = "Helvetica"
     fontsize = 14
-    bgcolor  = "#FFFFFF"
-    nodesep  = 0.60
-    ranksep  = 0.75
+    bgcolor  = "#ffffff"
+    nodesep  = 0.55
+    ranksep  = 0.90
 
-    // ── Default styles ─────────────────────────────────────────────────────────
+    // ── Default styles ────────────────────────────────────────────────────────
     node [fontname="Helvetica" fontsize=12 style="rounded,filled"
-          fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E" penwidth=1.5]
-    edge [fontname="Helvetica" fontsize=10 color="#455A64" arrowsize=0.85 penwidth=1.3]
+          fillcolor="#fafafa" color="#d4d4d8" fontcolor="#09090b" penwidth=1.5]
+    edge [fontname="Helvetica" fontsize=10 color="#a1a1aa" arrowsize=0.8 penwidth=1.2]
 
-    // ── Entry ──────────────────────────────────────────────────────────────────
-    start [label="AMD GPU"
-           shape=ellipse fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
+    // ── Entry ─────────────────────────────────────────────────────────────────
+    entry [label="AMD GPU"
+           shape=ellipse fillcolor="#f4f4f5" color="#09090b" fontcolor="#09090b" penwidth=2.0]
 
-    // ── Decision ───────────────────────────────────────────────────────────────
-    d_arch [label="Architecture?"
-            shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
-
-    // ── Architecture tiers ─────────────────────────────────────────────────────
-    arch_cdna3 [label="CDNA3+\nMI300X / MI325X\nMI350X / MI355X"]
-    arch_cdna2 [label="CDNA2\nMI250X / MI210"]
-    arch_rdna3 [label="RDNA3\nRX 7900 XTX / XT\nRX 7800 / 7700 XT"]
-    arch_rdna2 [label="RDNA2\nRX 6900 / 6800\nRX 6700 / 6600 XT"]
-
-    // ── Support-tier result nodes ──────────────────────────────────────────────
-    // Full support
-    tier_full [label="vLLM \u2713   llama.cpp \u2713   Ollama \u2713\nFull stack support"
-               fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
-
-    // Partial — vLLM limited
-    tier_part [label="vLLM \u26a0   llama.cpp \u2713   Ollama \u2713\nLimited vLLM support"
-               fillcolor="#FFF3E0" color="#E65100" fontcolor="#BF360C"]
-
-    // vLLM not supported
-    tier_none [label="vLLM \u2717   llama.cpp \u2713   Ollama \u2713\nvLLM unsupported on consumer RDNA"
-               fillcolor="#FFEBEE" color="#C62828" fontcolor="#B71C1C"]
-
-    // ── Edges ──────────────────────────────────────────────────────────────────
-    start      -> d_arch
-    d_arch     -> arch_cdna3 [label="CDNA3+"]
-    d_arch     -> arch_cdna2 [label="CDNA2"]
-    d_arch     -> arch_rdna3 [label="RDNA3"]
-    d_arch     -> arch_rdna2 [label="RDNA2"]
-    arch_cdna3 -> tier_full
-    arch_cdna2 -> tier_part
-    arch_rdna3 -> tier_none
-    arch_rdna2 -> tier_none
-
-    // ── Legend ─────────────────────────────────────────────────────────────────
-    subgraph cluster_legend {
-        label     = "Legend"
+    // ── CDNA3 — Datacenter Gen3 ───────────────────────────────────────────────
+    subgraph cluster_cdna3 {
+        label     = "CDNA3  \u2014  Datacenter Gen3"
         style     = "rounded,filled"
-        fillcolor = "#F5F5F5"
-        color     = "#B0BEC5"
+        fillcolor = "#f9fafb"
+        color     = "#d4d4d8"
         fontname  = "Helvetica"
         fontsize  = 11
 
-        node [width=2.1 height=0.38 margin="0.12,0.07"]
+        gpus_cdna3 [label="MI300X / MI325X\nMI350X / MI355X"]
+        tier_full  [label="vLLM \u2713   llama.cpp \u2713   Ollama \u2713\nFull stack \u2014 production ready"
+                    fillcolor="#dcfce7" color="#16a34a" fontcolor="#09090b"]
 
-        lg_entry [label="Entry"                shape=ellipse
-                  fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
-        lg_dec   [label="Decision"             shape=diamond
-                  fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
-        lg_full  [label="Full stack support"
-                  fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
-        lg_part  [label="Partial support (vLLM limited)"
-                  fillcolor="#FFF3E0" color="#E65100" fontcolor="#BF360C"]
-        lg_none  [label="vLLM unsupported"
-                  fillcolor="#FFEBEE" color="#C62828" fontcolor="#B71C1C"]
+        gpus_cdna3 -> tier_full
+    }
 
-        lg_entry -> lg_dec  [style=invis]
-        lg_dec   -> lg_full [style=invis]
-        lg_full  -> lg_part [style=invis]
-        lg_part  -> lg_none [style=invis]
+    // ── CDNA2 — Datacenter Gen2 ───────────────────────────────────────────────
+    subgraph cluster_cdna2 {
+        label     = "CDNA2  \u2014  Datacenter Gen2"
+        style     = "rounded,filled"
+        fillcolor = "#f9fafb"
+        color     = "#d4d4d8"
+        fontname  = "Helvetica"
+        fontsize  = 11
+
+        gpus_cdna2 [label="MI250X / MI210"]
+        tier_part  [label="vLLM \u26a0   llama.cpp \u2713   Ollama \u2713\nLimited vLLM \u2014 check ROCm compatibility"
+                    fillcolor="#fef3c7" color="#d97706" fontcolor="#09090b"]
+
+        gpus_cdna2 -> tier_part
+    }
+
+    // ── RDNA3 — Consumer RX 7000 ──────────────────────────────────────────────
+    subgraph cluster_rdna3 {
+        label     = "RDNA3  \u2014  Consumer RX 7000"
+        style     = "rounded,filled"
+        fillcolor = "#f9fafb"
+        color     = "#d4d4d8"
+        fontname  = "Helvetica"
+        fontsize  = 11
+
+        gpus_rdna3 [label="RX 7900 XTX / XT\nRX 7800 / 7700 XT"]
+        tier_rdna3 [label="vLLM \u2717   llama.cpp \u2713   Ollama \u2713\nROCm 6.1+ partial \u2014 check gfx1100"
+                    fillcolor="#fef3c7" color="#d97706" fontcolor="#09090b"]
+
+        gpus_rdna3 -> tier_rdna3
+    }
+
+    // ── RDNA2 — Consumer RX 6000 ──────────────────────────────────────────────
+    subgraph cluster_rdna2 {
+        label     = "RDNA2  \u2014  Consumer RX 6000"
+        style     = "rounded,filled"
+        fillcolor = "#f9fafb"
+        color     = "#d4d4d8"
+        fontname  = "Helvetica"
+        fontsize  = 11
+
+        gpus_rdna2 [label="RX 6900 / 6800\nRX 6700 / 6600 XT"]
+        tier_rdna2 [label="vLLM \u2717   llama.cpp \u2713   Ollama \u2713\nNo ROCm support \u2014 CPU / HIP fallback"
+                    fillcolor="#fee2e2" color="#dc2626" fontcolor="#09090b"]
+
+        gpus_rdna2 -> tier_rdna2
+    }
+
+    // ── Entry fan-out ─────────────────────────────────────────────────────────
+    entry -> gpus_cdna3
+    entry -> gpus_cdna2
+    entry -> gpus_rdna3
+    entry -> gpus_rdna2
+
+    // ── Legend ────────────────────────────────────────────────────────────────
+    subgraph cluster_legend {
+        label     = "Legend"
+        style     = "rounded,filled"
+        fillcolor = "#f9fafb"
+        color     = "#d4d4d8"
+        fontname  = "Helvetica"
+        fontsize  = 11
+
+        node [width=2.6 height=0.38 margin="0.12,0.07"]
+
+        lg_full [label="\u2713 All three backends production-ready"
+                 fillcolor="#dcfce7" color="#16a34a" fontcolor="#09090b"]
+        lg_part [label="\u26a0 vLLM limited; llama.cpp + Ollama work"
+                 fillcolor="#fef3c7" color="#d97706" fontcolor="#09090b"]
+        lg_none [label="\u2717 No vLLM \u2014 use llama.cpp or Ollama only"
+                 fillcolor="#fee2e2" color="#dc2626" fontcolor="#09090b"]
+
+        lg_full -> lg_part [style=invis]
+        lg_part -> lg_none [style=invis]
     }
 }

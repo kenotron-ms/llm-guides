@@ -1,87 +1,79 @@
 digraph mlx_path_selector {
-    // ── Graph globals ──────────────────────────────────────────────────────────
+    // ── Graph globals ─────────────────────────────────────────────────────────
     label    = "Apple Silicon \u2014 MLX Inference Path Selector"
     labelloc = t
     rankdir  = TB
     fontname = "Helvetica"
     fontsize = 14
-    bgcolor  = "#FFFFFF"
+    bgcolor  = "#ffffff"
     nodesep  = 0.55
     ranksep  = 0.70
 
-    // ── Default styles ─────────────────────────────────────────────────────────
+    // ── Default styles ────────────────────────────────────────────────────────
     node [fontname="Helvetica" fontsize=12 style="rounded,filled"
-          fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E" penwidth=1.5]
-    edge [fontname="Helvetica" fontsize=10 color="#455A64" arrowsize=0.85 penwidth=1.3]
+          fillcolor="#fafafa" color="#d4d4d8" fontcolor="#09090b" penwidth=1.5]
+    edge [fontname="Helvetica" fontsize=10 color="#a1a1aa" arrowsize=0.8 penwidth=1.2]
 
-    // ── Entry ──────────────────────────────────────────────────────────────────
+    // ── Entry ─────────────────────────────────────────────────────────────────
     start [label="Apple Silicon inference"
-           shape=ellipse fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
+           shape=ellipse fillcolor="#f4f4f5" color="#09090b" fontcolor="#09090b" penwidth=2.0]
 
-    // ── Decisions ──────────────────────────────────────────────────────────────
+    // ── Decisions ─────────────────────────────────────────────────────────────
     d_input [label="Model input type?"
-             shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
-    d_pri   [label="Priority?"
-             shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+             shape=diamond fillcolor="#f4f4f5" color="#71717a" fontcolor="#09090b"]
+    d_pri   [label="Optimize for?"
+             shape=diamond fillcolor="#f4f4f5" color="#71717a" fontcolor="#09090b"]
 
-    // ── Backend results ────────────────────────────────────────────────────────
-    mlx_vlm [label="mlx_vlm"
-              fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
-    lc_metal [label="llama.cpp  (Metal)"
-               fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
-    ol_metal [label="Ollama  (Metal)"
-               fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+    // ── Backend results ───────────────────────────────────────────────────────
+    mlx_vlm  [label="mlx_vlm"
+               fillcolor="#dbeafe" color="#2563eb" fontcolor="#09090b"]
+    ol_metal [label="Ollama  (Metal)"]
+    lc_metal [label="llama.cpp  (Metal)"]
 
     // ── Throughput reference annotations ──────────────────────────────────────
     ref_mlx [label="\u223535\u201355 tok/s\n(M3/M4 Max \u00b7 26B Q4)"
               shape=note style="filled"
-              fillcolor="#F5F5F5" color="#78909C" fontcolor="#37474F" fontsize=10]
+              fillcolor="#f9fafb" color="#d4d4d8" fontcolor="#71717a" fontsize=10]
     ref_lc  [label="\u223525\u201340 tok/s\n(M3/M4 Max \u00b7 26B Q4)"
               shape=note style="filled"
-              fillcolor="#F5F5F5" color="#78909C" fontcolor="#37474F" fontsize=10]
+              fillcolor="#f9fafb" color="#d4d4d8" fontcolor="#71717a" fontsize=10]
     ref_ol  [label="\u223520\u201335 tok/s\n(M3/M4 Max \u00b7 26B Q4)"
               shape=note style="filled"
-              fillcolor="#F5F5F5" color="#78909C" fontcolor="#37474F" fontsize=10]
+              fillcolor="#f9fafb" color="#d4d4d8" fontcolor="#71717a" fontsize=10]
 
-    // ── Edges ──────────────────────────────────────────────────────────────────
+    // ── Edges ─────────────────────────────────────────────────────────────────
     start    -> d_input
     d_input  -> mlx_vlm  [label="Vision / multimodal"]
     d_input  -> d_pri    [label="Text only"]
-    d_pri    -> mlx_vlm  [label="Max tok/s"]
+    d_pri    -> mlx_vlm  [label="Max speed (tok/s)"]
     d_pri    -> ol_metal [label="Easy setup"]
-    d_pri    -> lc_metal [label="Full control / GGUF"]
+    d_pri    -> lc_metal [label="GGUF / full control"]
 
     // Annotation edges — dashed, no arrowhead
-    mlx_vlm  -> ref_mlx [style=dashed arrowhead=none color="#B0BEC5" penwidth=1.0]
-    lc_metal -> ref_lc  [style=dashed arrowhead=none color="#B0BEC5" penwidth=1.0]
-    ol_metal -> ref_ol  [style=dashed arrowhead=none color="#B0BEC5" penwidth=1.0]
+    mlx_vlm  -> ref_mlx [style=dashed arrowhead=none color="#d4d4d8" penwidth=1.0]
+    lc_metal -> ref_lc  [style=dashed arrowhead=none color="#d4d4d8" penwidth=1.0]
+    ol_metal -> ref_ol  [style=dashed arrowhead=none color="#d4d4d8" penwidth=1.0]
 
-    // ── Legend ─────────────────────────────────────────────────────────────────
+    // ── Legend ────────────────────────────────────────────────────────────────
     subgraph cluster_legend {
         label     = "Legend"
         style     = "rounded,filled"
-        fillcolor = "#F5F5F5"
-        color     = "#B0BEC5"
+        fillcolor = "#f9fafb"
+        color     = "#d4d4d8"
         fontname  = "Helvetica"
         fontsize  = 11
 
-        node [width=1.9 height=0.38 margin="0.12,0.07"]
+        node [width=2.3 height=0.38 margin="0.12,0.07"]
 
-        lg_entry [label="Entry"                shape=ellipse
-                  fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
-        lg_dec   [label="Decision"             shape=diamond
-                  fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
-        lg_best  [label="Fastest / top pick"
-                  fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
-        lg_std   [label="Standard backend"
-                  fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
-        lg_perf  [label="Throughput reference"
-                  shape=note style="filled"
-                  fillcolor="#F5F5F5" color="#78909C" fontcolor="#37474F"]
+        lg_fast [label="Fastest path \u2014 max tok/s on Apple Silicon"
+                 fillcolor="#dbeafe" color="#2563eb" fontcolor="#09090b"]
+        lg_std  [label="General-purpose Metal backend"
+                 fillcolor="#fafafa" color="#d4d4d8" fontcolor="#09090b"]
+        lg_perf [label="Throughput ref (M3/M4 Max \u00b7 26B Q4)"
+                 shape=note style="filled"
+                 fillcolor="#f9fafb" color="#d4d4d8" fontcolor="#71717a"]
 
-        lg_entry -> lg_dec  [style=invis]
-        lg_dec   -> lg_best [style=invis]
-        lg_best  -> lg_std  [style=invis]
-        lg_std   -> lg_perf [style=invis]
+        lg_fast -> lg_std  [style=invis]
+        lg_std  -> lg_perf [style=invis]
     }
 }
