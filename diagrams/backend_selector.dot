@@ -1,27 +1,80 @@
 digraph backend_selector {
-    rankdir=TB;
-    node [fontname="Helvetica", fontsize=12];
+    // ── Graph globals ──────────────────────────────────────────────────────────
+    label       = "LLM Backend Selector"
+    labelloc    = t
+    rankdir     = TB
+    fontname    = "Helvetica"
+    fontsize    = 14
+    bgcolor     = "#FFFFFF"
+    nodesep     = 0.55
+    ranksep     = 0.70
 
-    A   [label="What do I need?", shape=ellipse];
-    B   [label="GUI required?", shape=diamond];
-    LMS [label="LM Studio", shape=box, style=filled, fillcolor="#1a1a2e", color="#4a90d9", fontcolor="#e0e0e0"];
-    C   [label="Multi-user / production?", shape=diamond];
-    D   [label="NVIDIA or MI300X+?", shape=diamond];
-    VL  [label="vLLM", shape=box, style=filled, fillcolor="#1a1a2e", color="#4a90d9", fontcolor="#e0e0e0"];
-    LC  [label="llama.cpp", shape=box, style=filled, fillcolor="#1a1a2e", color="#4a90d9", fontcolor="#e0e0e0"];
-    E   [label="Quick setup, team API?", shape=diamond];
-    OL  [label="Ollama", shape=box, style=filled, fillcolor="#1a1a2e", color="#4a90d9", fontcolor="#e0e0e0"];
-    F   [label="Full GPU + CPU control?", shape=diamond];
+    // ── Default styles ─────────────────────────────────────────────────────────
+    node [fontname="Helvetica" fontsize=12 style="rounded,filled"
+          fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E" penwidth=1.5]
+    edge [fontname="Helvetica" fontsize=10 color="#455A64" arrowsize=0.85 penwidth=1.3]
 
-    A  -> B;
-    B  -> LMS [label="Yes"];
-    B  -> C   [label="No"];
-    C  -> D   [label="Yes"];
-    D  -> VL  [label="Yes"];
-    D  -> LC  [label="No"];
-    C  -> E   [label="No"];
-    E  -> OL  [label="Yes"];
-    E  -> F   [label="No"];
-    F  -> LC  [label="Yes"];
-    F  -> OL  [label="No"];
+    // ── Entry ──────────────────────────────────────────────────────────────────
+    start [label="What do I need?"
+           shape=ellipse fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
+
+    // ── Decisions ──────────────────────────────────────────────────────────────
+    d_gui  [label="GUI required?"
+            shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+    d_prod [label="Multi-user /\nproduction?"
+            shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+    d_gpu  [label="NVIDIA or\nMI300X+?"
+            shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+    d_team [label="Quick setup,\nteam API?"
+            shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+    d_ctrl [label="Full GPU +\nCPU control?"
+            shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+
+    // ── Backend results ────────────────────────────────────────────────────────
+    lms [label="LM Studio"
+         fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
+    vl  [label="vLLM"
+         fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
+    ol  [label="Ollama"
+         fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+    lc  [label="llama.cpp"
+         fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+
+    // ── Edges ──────────────────────────────────────────────────────────────────
+    start  -> d_gui
+    d_gui  -> lms    [label="Yes"]
+    d_gui  -> d_prod [label="No"]
+    d_prod -> d_gpu  [label="Yes"]
+    d_gpu  -> vl     [label="Yes"]
+    d_gpu  -> lc     [label="No"]
+    d_prod -> d_team [label="No"]
+    d_team -> ol     [label="Yes"]
+    d_team -> d_ctrl [label="No"]
+    d_ctrl -> lc     [label="Yes"]
+    d_ctrl -> ol     [label="No"]
+
+    // ── Legend ─────────────────────────────────────────────────────────────────
+    subgraph cluster_legend {
+        label     = "Legend"
+        style     = "rounded,filled"
+        fillcolor = "#F5F5F5"
+        color     = "#B0BEC5"
+        fontname  = "Helvetica"
+        fontsize  = 11
+
+        node [width=1.7 height=0.38 margin="0.12,0.07"]
+
+        lg_entry [label="Entry point"      shape=ellipse
+                  fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
+        lg_dec   [label="Decision"         shape=diamond
+                  fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+        lg_best  [label="Recommended backend"
+                  fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
+        lg_std   [label="Standard backend"
+                  fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+
+        lg_entry -> lg_dec  [style=invis]
+        lg_dec   -> lg_best [style=invis]
+        lg_best  -> lg_std  [style=invis]
+    }
 }

@@ -1,25 +1,85 @@
 digraph qwen35_variant {
-    rankdir=TB;
-    node [fontname="Helvetica", fontsize=12];
+    // ── Graph globals ──────────────────────────────────────────────────────────
+    label    = "Qwen3.5 \u2014 Variant Selector"
+    labelloc = t
+    rankdir  = TB
+    fontname = "Helvetica"
+    fontsize = 14
+    bgcolor  = "#FFFFFF"
+    nodesep  = 0.55
+    ranksep  = 0.70
 
-    A     [label="Qwen3.5 \xe2\x80\x94 pick a variant", shape=ellipse];
-    B     [label="Available VRAM?", shape=diamond];
-    W27   [label="27B Q4\n~14 GB\nStrong dense, fits 16 GB VRAM", shape=box, style=filled, fillcolor="#1a1a2e", color="#4a90d9", fontcolor="#e0e0e0"];
-    C     [label="Priority?", shape=diamond];
-    W35   [label="35B-A3B Q4\n~18 GB\nFast MoE, 3B active params", shape=box, style=filled, fillcolor="#1a1a2e", color="#4a90d9", fontcolor="#e0e0e0"];
-    D     [label="Dense or MoE?", shape=diamond];
-    W27Q6 [label="27B Q8\n~27 GB\nNear-lossless dense", shape=box, style=filled, fillcolor="#1a1a2e", color="#4a90d9", fontcolor="#e0e0e0"];
-    W122  [label="122B-A10B Q4\n~62 GB\nMulti-GPU powerhouse", shape=box, style=filled, fillcolor="#0d3321", color="#27ae60", fontcolor="#e0e0e0"];
-    W397  [label="397B-A17B Q4\n~200 GB\nDatacenter / multi-node", shape=box, style=filled, fillcolor="#2d1a00", color="#e67e22", fontcolor="#e0e0e0"];
+    // ── Default styles ─────────────────────────────────────────────────────────
+    node [fontname="Helvetica" fontsize=12 style="rounded,filled"
+          fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E" penwidth=1.5]
+    edge [fontname="Helvetica" fontsize=10 color="#455A64" arrowsize=0.85 penwidth=1.3]
 
-    A -> B;
-    B -> W27   [label="14\xe2\x80\x9316 GB"];
-    B -> C     [label="18\xe2\x80\x9324 GB"];
-    C -> W35   [label="Fastest inference"];
-    C -> W27   [label="Highest quality"];
-    B -> D     [label="24\xe2\x80\x9348 GB"];
-    D -> W35   [label="Speed"];
-    D -> W27Q6 [label="Quality per GB"];
-    B -> W122  [label="48\xe2\x80\x9380 GB"];
-    B -> W397  [label="200+ GB"];
+    // ── Entry ──────────────────────────────────────────────────────────────────
+    start [label="Qwen3.5 \u2014 pick a variant"
+           shape=ellipse fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
+
+    // ── Decisions ──────────────────────────────────────────────────────────────
+    d_vram [label="Available VRAM?"
+            shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+    d_pri  [label="Priority?"
+            shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+    d_moe  [label="Dense or MoE?"
+            shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+
+    // ── Variant nodes ──────────────────────────────────────────────────────────
+    // Workstation range
+    v_27b   [label="27B Q4\n~14 GB  \u00b7  Strong dense, fits 16 GB VRAM"
+              fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+    v_35b   [label="35B-A3B Q4\n~18 GB  \u00b7  Fast MoE, 3B active params"
+              fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+    v_27q8  [label="27B Q8\n~27 GB  \u00b7  Near-lossless dense"
+              fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+
+    // High-capacity / multi-GPU
+    v_122b  [label="122B-A10B Q4\n~62 GB  \u00b7  Multi-GPU powerhouse"
+              fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
+
+    // Datacenter
+    v_397b  [label="397B-A17B Q4\n~200 GB  \u00b7  Datacenter / multi-node"
+              fillcolor="#FFF3E0" color="#E65100" fontcolor="#BF360C"]
+
+    // ── Edges ──────────────────────────────────────────────────────────────────
+    start  -> d_vram
+    d_vram -> v_27b  [label="14\u201316 GB"]
+    d_vram -> d_pri  [label="18\u201324 GB"]
+    d_pri  -> v_35b  [label="Fastest inference"]
+    d_pri  -> v_27b  [label="Highest quality"]
+    d_vram -> d_moe  [label="24\u201348 GB"]
+    d_moe  -> v_35b  [label="Speed"]
+    d_moe  -> v_27q8 [label="Quality per GB"]
+    d_vram -> v_122b [label="48\u201380 GB"]
+    d_vram -> v_397b [label="200+ GB"]
+
+    // ── Legend ─────────────────────────────────────────────────────────────────
+    subgraph cluster_legend {
+        label     = "Legend"
+        style     = "rounded,filled"
+        fillcolor = "#F5F5F5"
+        color     = "#B0BEC5"
+        fontname  = "Helvetica"
+        fontsize  = 11
+
+        node [width=2.0 height=0.38 margin="0.12,0.07"]
+
+        lg_entry [label="Entry"                    shape=ellipse
+                  fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
+        lg_dec   [label="Decision"                 shape=diamond
+                  fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+        lg_hi    [label="High-capacity / multi-GPU"
+                  fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
+        lg_std   [label="Standard workstation"
+                  fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+        lg_dc    [label="Datacenter / multi-node"
+                  fillcolor="#FFF3E0" color="#E65100" fontcolor="#BF360C"]
+
+        lg_entry -> lg_dec [style=invis]
+        lg_dec   -> lg_hi  [style=invis]
+        lg_hi    -> lg_std [style=invis]
+        lg_std   -> lg_dc  [style=invis]
+    }
 }

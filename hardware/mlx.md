@@ -4,7 +4,7 @@ Apple Silicon Macs (M1, M2, M3, M4) use unified memory — RAM and GPU memory ar
 
 Two inference paths are available:
 
-![Apple Silicon (MLX) Path Selector — Decision Schematic](../diagrams/blueprint/mlx_path_selector_blueprint.png)
+![Apple Silicon (MLX) Path Selector — Decision Schematic](../diagrams/rendered/mlx_path_selector.png)
 *[view / edit source](https://mermaid.live/edit#pako:jZJRb5swFIX/ypXz0krQEEhalYdNTWjyEpRO6/YC0XQFZrVyjZExW6KQ/fYZSKqoL5v9dK/Pd8615SPLVM5ZyApSv7M31AZeo7QEu55ukqeqIg5fBYlMlSDKgmteZnx7C677CebH2LJk+1VjwBwq/vk0oPPuvP0uamGxMciGjJAqR2phkUja//hFcnstfeV7A6qkQwvR8UULpYU5XNyiXhLjHozajWvrcd1/xvoANTdN1cJmnWyIUCLE3CBtr3XLhgjsNYxWZGdarb4tW1gvkl5/l1XVOzNQi/6Oz0nK/gQzdzYbwtO0vImDcTwFO48D/v0cvkxvU3aOWg/UsqP8mTv1/ovarHtq1VOeG/w76zxiGIYF1uaSbUsp8ovnpRrqjLCuI15AB0AhiMKRlweBP3Fq+yQ7Ho78B+T3npMpUjocca/bH2BreGYnOEGfv7NTfPTyx48sc5jkWqLIWXhk5o3L7qvlqHfs5LCmytHwSOBPjZKFRjf89Bc=)*
 
 1. **llama.cpp with Metal** — runs GGUF models, auto-detected on macOS

@@ -32,7 +32,7 @@ Qwen3.6 builds on Qwen3.5's breakthroughs with a focused improvement on **agenti
 
 ### Consumer GPU Quick Reference
 
-![Hardware Selector — Decision Schematic](../diagrams/blueprint/hardware_selector_blueprint.png)
+![Hardware Selector — Decision Schematic](../diagrams/rendered/hardware_selector.png)
 *[view / edit source](https://mermaid.live/edit#pako:bZNfb5swFMW/yhV52ZSw8SclgYdVELKMLTRtunSRKA8emAbVYOSQdhXku8+YJAVt8ICv/TvnnmuJSopojCVLSgh9jXaIlfDTfcyBP/aH4NcOlcA341fEMMQUPF694OvwI8jyF3Cqxe0GPkNBUJlQll0fW6XTnNY3D57r2TXMgtnGteEel4ci7AK279bgCo8nnPfFdlEQDPcpSSOa1zAP/OWWd/Jxich/rGbcg+bkrYavASEoQ5+iogC+y6mWcwXne7qiCCNP1662wxoWwcty6cMQLrKwK1hvwVAUhSsm/FPDt479EFaiuPSYiVvxqoe17Z/H8YTNFBZODd+DuebA3ZS7zcd8MQ67jKoJ6EcgzhpIm/CF3ocMAS0DzXBkW5icwb6bNhag/w4aHNSveKH/A4+nQ0HfBBeg6a9qGq9U5cS3irkYclVt8jRJcQwZzih7O4+7OqWUT/1v+0Hb0cIuqxuy0bJ3792N81B91jRk1WyvaR100jVhdXPSyxkRtN+7OIHf9A8kKSHWQEUq0vBoXzL6jK3BGJlKbI4iSiizBlhp3sdcGkkZZhlKY8mqpHKHs+b3iBF7lo4j6VDEqMRuip4YyiSrZAd8/As=)*
 
 | GPU | VRAM | Recommendation |

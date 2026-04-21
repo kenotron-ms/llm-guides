@@ -1,41 +1,110 @@
 digraph hardware_selector {
-    rankdir=TB;
-    node [fontname="Helvetica", fontsize=12];
+    // ── Graph globals ──────────────────────────────────────────────────────────
+    label    = "Hardware Setup Selector"
+    labelloc = t
+    rankdir  = TB
+    fontname = "Helvetica"
+    fontsize = 14
+    bgcolor  = "#FFFFFF"
+    nodesep  = 0.50
+    ranksep  = 0.70
 
-    A [label="What hardware do I have?", shape=ellipse];
-    B [label="GPU / platform?", shape=diamond];
-    C [label="CUDA Setup", shape=box];
-    D [label="GPU gen?", shape=diamond];
-    E [label="MLX / Metal Setup", shape=box];
-    F [label="llama.cpp CPU", shape=box];
-    G [label="vLLM + llama.cpp", shape=box];
-    H [label="llama.cpp + Ollama", shape=box];
-    I [label="VRAM?", shape=diamond];
-    J [label="E2B Q8 / E4B Q4", shape=box];
-    K [label="E4B Q8 / 27B Q3", shape=box];
-    L [label="26B-A4B Q4 / 27B Q4", shape=box];
-    M [label="26B-A4B Q6 / 35B-A3B Q4", shape=box];
-    N [label="35B-A3B Q8 / 122B-A10B Q4", shape=box];
-    O [label="Unified memory?", shape=diamond];
-    P [label="26B-A4B Q4 / E4B Q8", shape=box];
-    Q [label="35B-A3B Q6 / 27B Q8", shape=box];
-    R [label="122B-A10B Q8 / 397B Q4", shape=box];
+    // ── Default styles ─────────────────────────────────────────────────────────
+    node [fontname="Helvetica" fontsize=12 style="rounded,filled"
+          fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E" penwidth=1.5]
+    edge [fontname="Helvetica" fontsize=10 color="#455A64" arrowsize=0.85 penwidth=1.3]
 
-    A -> B;
-    B -> C [label="NVIDIA"];
-    B -> D [label="AMD"];
-    B -> E [label="Apple Silicon"];
-    B -> F [label="CPU only"];
-    D -> G [label="MI300X / MI325X+"];
-    D -> H [label="RX 6000 / 7000"];
-    C -> I;
-    I -> J [label="8 GB"];
-    I -> K [label="12 GB"];
-    I -> L [label="16 GB"];
-    I -> M [label="24 GB"];
-    I -> N [label="48+ GB"];
-    E -> O;
-    O -> P [label="16-24 GB"];
-    O -> Q [label="36-64 GB"];
-    O -> R [label="96-192 GB"];
+    // ── Entry ──────────────────────────────────────────────────────────────────
+    start [label="What hardware\ndo I have?"
+           shape=ellipse fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
+
+    // ── Top-level platform decision ────────────────────────────────────────────
+    d_platform [label="GPU / platform?"
+                shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+
+    // ── NVIDIA path ────────────────────────────────────────────────────────────
+    setup_cuda [label="CUDA Setup"]
+
+    d_vram [label="VRAM?"
+            shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+
+    v_8gb  [label="E2B Q8  /  E4B Q4\n~3\u20135 GB"]
+    v_12gb [label="E4B Q8  /  27B Q3\n~7.5\u201311 GB"]
+    v_16gb [label="26B-A4B Q4  /  27B Q4\n~14\u201316 GB"]
+    v_24gb [label="26B-A4B Q6  /  35B-A3B Q4\n~18\u201324 GB"]
+    v_48gb [label="35B-A3B Q8  /  122B-A10B Q4\n~26\u201362 GB"
+             fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
+
+    // ── AMD path ───────────────────────────────────────────────────────────────
+    d_amd_gen [label="GPU gen?"
+               shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+
+    amd_dc [label="vLLM + llama.cpp\n(MI300X / MI325X+)"
+             fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
+    amd_rx [label="llama.cpp + Ollama\n(RX 6000 / 7000)"]
+
+    // ── Apple Silicon path ─────────────────────────────────────────────────────
+    setup_mlx [label="MLX / Metal Setup"]
+
+    d_umem [label="Unified memory?"
+            shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+
+    um_16gb [label="26B-A4B Q4  /  E4B Q8\n16\u201324 GB unified"]
+    um_36gb [label="35B-A3B Q6  /  27B Q8\n36\u201364 GB unified"]
+    um_96gb [label="122B-A10B Q8  /  397B Q4\n96\u2013192 GB unified"
+              fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
+
+    // ── CPU-only path ──────────────────────────────────────────────────────────
+    cpu_only [label="llama.cpp  (CPU only)"]
+
+    // ── Edges ──────────────────────────────────────────────────────────────────
+    start      -> d_platform
+
+    d_platform -> setup_cuda  [label="NVIDIA"]
+    d_platform -> d_amd_gen   [label="AMD"]
+    d_platform -> setup_mlx   [label="Apple Silicon"]
+    d_platform -> cpu_only    [label="CPU only"]
+
+    // NVIDIA sub-tree
+    setup_cuda -> d_vram
+    d_vram     -> v_8gb   [label="8 GB"]
+    d_vram     -> v_12gb  [label="12 GB"]
+    d_vram     -> v_16gb  [label="16 GB"]
+    d_vram     -> v_24gb  [label="24 GB"]
+    d_vram     -> v_48gb  [label="48+ GB"]
+
+    // AMD sub-tree
+    d_amd_gen  -> amd_dc  [label="MI300X / MI325X+"]
+    d_amd_gen  -> amd_rx  [label="RX 6000 / 7000"]
+
+    // Apple Silicon sub-tree
+    setup_mlx  -> d_umem
+    d_umem     -> um_16gb [label="16\u201324 GB"]
+    d_umem     -> um_36gb [label="36\u201364 GB"]
+    d_umem     -> um_96gb [label="96\u2013192 GB"]
+
+    // ── Legend ─────────────────────────────────────────────────────────────────
+    subgraph cluster_legend {
+        label     = "Legend"
+        style     = "rounded,filled"
+        fillcolor = "#F5F5F5"
+        color     = "#B0BEC5"
+        fontname  = "Helvetica"
+        fontsize  = 11
+
+        node [width=2.0 height=0.38 margin="0.12,0.07"]
+
+        lg_entry [label="Entry"                 shape=ellipse
+                  fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
+        lg_dec   [label="Decision"              shape=diamond
+                  fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+        lg_hi    [label="High-capacity / full stack"
+                  fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
+        lg_std   [label="Platform setup / model fit"
+                  fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+
+        lg_entry -> lg_dec  [style=invis]
+        lg_dec   -> lg_hi   [style=invis]
+        lg_hi    -> lg_std  [style=invis]
+    }
 }

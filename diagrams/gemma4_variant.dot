@@ -1,24 +1,84 @@
 digraph gemma4_variant {
-    rankdir=TB;
-    node [fontname="Helvetica", fontsize=12];
+    // ── Graph globals ──────────────────────────────────────────────────────────
+    label    = "Gemma 4 \u2014 Variant Selector"
+    labelloc = t
+    rankdir  = TB
+    fontname = "Helvetica"
+    fontsize = 14
+    bgcolor  = "#FFFFFF"
+    nodesep  = 0.55
+    ranksep  = 0.70
 
-    A    [label="Gemma 4 \xe2\x80\x94 pick a variant", shape=ellipse];
-    B    [label="Available RAM / VRAM?", shape=diamond];
-    E2B  [label="E2B Q4\n~3 GB\nPhone / Pi / edge", shape=box, style=filled, fillcolor="#2d0d4e", color="#9b59b6", fontcolor="#e0e0e0"];
-    E4B4 [label="E4B Q4\n~5 GB\nLaptop / 8 GB RAM", shape=box, style=filled, fillcolor="#2d0d4e", color="#9b59b6", fontcolor="#e0e0e0"];
-    E4B8 [label="E4B Q8\n~7.5 GB\nDesktop, near-lossless", shape=box, style=filled, fillcolor="#1a1a2e", color="#4a90d9", fontcolor="#e0e0e0"];
-    M26  [label="26B-A4B Q4\n~16 GB\nBest speed/quality balance", shape=box, style=filled, fillcolor="#1a1a2e", color="#4a90d9", fontcolor="#e0e0e0"];
-    C    [label="Dense or MoE?", shape=diamond];
-    M31  [label="31B Q4\n~17 GB\nHighest quality", shape=box, style=filled, fillcolor="#0d3321", color="#27ae60", fontcolor="#e0e0e0"];
-    M31H [label="31B Q8 / BF16\nNear-lossless", shape=box, style=filled, fillcolor="#0d3321", color="#27ae60", fontcolor="#e0e0e0"];
+    // ── Default styles ─────────────────────────────────────────────────────────
+    node [fontname="Helvetica" fontsize=12 style="rounded,filled"
+          fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E" penwidth=1.5]
+    edge [fontname="Helvetica" fontsize=10 color="#455A64" arrowsize=0.85 penwidth=1.3]
 
-    A -> B;
-    B -> E2B  [label="Less than 5 GB"];
-    B -> E4B4 [label="5\xe2\x80\x938 GB"];
-    B -> E4B8 [label="8\xe2\x80\x9315 GB"];
-    B -> M26  [label="16\xe2\x80\x9320 GB"];
-    B -> C    [label="20\xe2\x80\x9324 GB"];
-    C -> M26  [label="Speed + efficiency"];
-    C -> M31  [label="Max quality"];
-    B -> M31H [label="48+ GB"];
+    // ── Entry ──────────────────────────────────────────────────────────────────
+    start [label="Gemma 4 \u2014 pick a variant"
+           shape=ellipse fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
+
+    // ── Decisions ──────────────────────────────────────────────────────────────
+    d_ram [label="Available RAM / VRAM?"
+           shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+    d_moe [label="Dense or MoE?"
+           shape=diamond fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+
+    // ── Variant nodes ──────────────────────────────────────────────────────────
+    // Edge / ultra-low RAM
+    v_e2b  [label="E2B Q4\n~3 GB  \u00b7  Phone / Pi / edge"
+             fillcolor="#F3E5F5" color="#6A1B9A" fontcolor="#4A148C"]
+    v_e4b4 [label="E4B Q4\n~5 GB  \u00b7  Laptop / 8 GB RAM"
+             fillcolor="#F3E5F5" color="#6A1B9A" fontcolor="#4A148C"]
+
+    // Standard desktop range
+    v_e4b8 [label="E4B Q8\n~7.5 GB  \u00b7  Desktop, near-lossless"
+             fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+    v_m26  [label="26B-A4B Q4\n~16 GB  \u00b7  Best speed / quality balance"
+             fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+
+    // Recommended / high-quality
+    v_m31  [label="31B Q4\n~17 GB  \u00b7  Highest quality"
+             fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
+    v_m31h [label="31B Q8 / BF16\n~34 GB  \u00b7  Near-lossless"
+             fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
+
+    // ── Edges ──────────────────────────────────────────────────────────────────
+    start  -> d_ram
+    d_ram  -> v_e2b  [label="< 5 GB"]
+    d_ram  -> v_e4b4 [label="5\u20138 GB"]
+    d_ram  -> v_e4b8 [label="8\u201315 GB"]
+    d_ram  -> v_m26  [label="16\u201320 GB"]
+    d_ram  -> d_moe  [label="20\u201324 GB"]
+    d_moe  -> v_m26  [label="Speed + efficiency"]
+    d_moe  -> v_m31  [label="Max quality"]
+    d_ram  -> v_m31h [label="48+ GB"]
+
+    // ── Legend ─────────────────────────────────────────────────────────────────
+    subgraph cluster_legend {
+        label     = "Legend"
+        style     = "rounded,filled"
+        fillcolor = "#F5F5F5"
+        color     = "#B0BEC5"
+        fontname  = "Helvetica"
+        fontsize  = 11
+
+        node [width=1.8 height=0.38 margin="0.12,0.07"]
+
+        lg_entry [label="Entry"               shape=ellipse
+                  fillcolor="#E3F2FD" color="#1565C0" fontcolor="#0D47A1"]
+        lg_dec   [label="Decision"            shape=diamond
+                  fillcolor="#FFF8E1" color="#E65100" fontcolor="#BF360C"]
+        lg_best  [label="Recommended quality"
+                  fillcolor="#E8F5E9" color="#2E7D32" fontcolor="#1B5E20"]
+        lg_std   [label="Standard range"
+                  fillcolor="#EEF2FF" color="#3949AB" fontcolor="#1A237E"]
+        lg_edge  [label="Edge / low-RAM"
+                  fillcolor="#F3E5F5" color="#6A1B9A" fontcolor="#4A148C"]
+
+        lg_entry -> lg_dec  [style=invis]
+        lg_dec   -> lg_best [style=invis]
+        lg_best  -> lg_std  [style=invis]
+        lg_std   -> lg_edge [style=invis]
+    }
 }

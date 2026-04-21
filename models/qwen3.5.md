@@ -35,7 +35,7 @@ All instruct variants use the `-Instruct` suffix on Hugging Face: `Qwen/Qwen3.5-
 
 ## Picking the Right Variant
 
-![Qwen 3.5 Variant Selector — Hardware Schematic](../diagrams/blueprint/qwen35_variant_blueprint.png)
+![Qwen 3.5 Variant Selector — Hardware Schematic](../diagrams/rendered/qwen35_variant.png)
 *[view / edit source](https://mermaid.live/edit#pako:fZPdjpswEIZfZcTetCppwZATF63C0qY3qTbdHi6WvZjCJLHCqbZJtMqmz17bhGiTSgXJwvb83/wzNgcnq3NyImdV1Ptsg0LBtyStQD+zVw/LPVXB2yGkLfP8EBqebQFhh4JjpR5fw2DwHuLDbIe8wF8FwY+vs8WHY1p1gNjsP/uhVQf+CObxM/xk44fUYeMYlmGaVn80dh7rj3sl6moNOVWSXFhxJcEqLDN1Hi+Qkw7JQou8PdwJXguunkxuE3Zrwz6hVCQV8GpFgqqMdPZgqLMHw3gwC84OJp0DEw6L+qMLegszxXcEDQos5Tl9x/3M1xvD/d1ioZPaml7aY6eKw4m1lxwSUxTUwtB7i4kNvW+Icmvr5eqyA0NDou/ZctR3bWI8s3Hn+QuhGBS1lAVJ2TXvqlfhqVcTr0P5jGmSHnULfK/vwYh1vEVbKD6Y332Hpt6T2NTtP0DmeW86VDA1R6lHgzofqN7vWAkqzKhSuoh3UFpwpe+axXVAXVcURSXPT9NgeDE1VV8saNd6XqBYU6+YGkKe9cSsQCkTWoEW6UtUFNGNjz4ycqW+X1uKbkKcevnUzeqiFtENeea90toEJ7WXBwHzz2o2Rhp5/1Xn2UnKch897yyl0ZgYu5Y6rlOSKJHnTnRw1IZK8zPmKLbO0XXaJkdFCce1voZOpERLx78=)*
 
 ---
