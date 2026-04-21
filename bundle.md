@@ -7,12 +7,11 @@ bundle:
 
     Covers model selection, hardware requirements (CUDA / ROCm / MLX), and
     backend setup (llama.cpp, Ollama, vLLM, LM Studio) across Windows, Linux,
-    and macOS. Includes an infographic-builder agent for generating visual
+    and macOS. Includes the infographic-builder bundle for generating visual
     summaries, decision charts, and model comparison cards.
 
-agents:
-  include:
-    - local-llm-guides:agents/infographic-builder
+includes:
+  - bundle: git+https://github.com/singh2/infographic-builder@main
 ---
 
 @local-llm-guides:README.md
