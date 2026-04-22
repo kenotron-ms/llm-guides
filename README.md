@@ -44,9 +44,10 @@ Team reference for running **Qwen3.5**, **Qwen3.6**, and **Gemma 4** models loca
 
 | Variant | Arch | Total Params | Active Params | Context | 4-bit RAM | Best For |
 |---------|------|-------------|---------------|---------|-----------|----------|
+| **27B** | Dense | 27B | all | 262K (1M YaRN) | ~17 GB | **Flagship coding** — beats 397B MoE; fits 16 GB VRAM |
 | 35B-A3B | MoE | 35B | 3B active | 256K (1M YaRN) | ~23 GB | Agentic coding, best single-GPU MoE |
 
-> Qwen3.6 supports 201 languages, multimodal vision, and hybrid thinking (thinking/non-thinking mode toggle).
+> Qwen3.6 supports 201 languages, hybrid thinking, and tool calling. The **27B dense** surpasses Qwen3.5-397B-A17B (807 GB) across all major coding benchmarks at 15× lower memory.
 
 ---
 
@@ -70,6 +71,7 @@ Team reference for running **Qwen3.5**, **Qwen3.6**, and **Gemma 4** models loca
 | Gemma 4 26B-A4B | — | — | Q4 | Q6 | BF16 | BF16 |
 | Gemma 4 31B | — | — | Q4 | Q6 | BF16 | BF16 |
 | Qwen3.5 27B | — | — | Q4 | Q6 | BF16 | BF16 |
+| **Qwen3.6 27B** | — | — | Q4 | Q6 | BF16 | BF16 |
 | Qwen3.5/3.6 35B-A3B | — | — | — | Q4 | Q6-Q8 | BF16 |
 | Qwen3.5 122B-A10B | — | — | — | — | — | Q4 (2×80) |
 
@@ -98,7 +100,7 @@ Team reference for running **Qwen3.5**, **Qwen3.6**, and **Gemma 4** models loca
 ## Model Guides
 
 - [models/qwen3.5.md](models/qwen3.5.md) — Qwen3.5 family (27B, 35B-A3B, 122B-A10B, 397B-A17B)
-- [models/qwen3.6.md](models/qwen3.6.md) — Qwen3.6-35B-A3B (latest, agentic coding)
+- [models/qwen3.6.md](models/qwen3.6.md) — Qwen3.6 family (27B dense flagship, 35B-A3B MoE)
 - [models/gemma4.md](models/gemma4.md) — Gemma 4 (E2B, E4B, 26B-A4B, 31B)
 
 ## Backend Guides
