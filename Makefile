@@ -1,16 +1,16 @@
 # ── Local LLM Guides ──────────────────────────────────────────────────────────
 # Usage:
-#   make          — render all diagrams + regenerate mockup.html
+#   make          — render diagrams + build full site → dist/
 #   make diagrams — re-render .dot → PNG only
-#   make mockup   — regenerate mockup.html only
-#   make clean    — remove all generated files
+#   make serve    — build then serve at http://localhost:3000
+#   make clean    — remove dist/ and rendered PNGs
 
 DOTS := $(wildcard diagrams/*.dot)
 PNGS := $(DOTS:diagrams/%.dot=diagrams/rendered/%.png)
 
-.PHONY: all diagrams mockup clean
+.PHONY: all diagrams site serve clean
 
-all: diagrams mockup
+all: diagrams site
 
 # ── Diagrams ──────────────────────────────────────────────────────────────────
 
@@ -21,16 +21,16 @@ diagrams/rendered/%.png: diagrams/%.dot
 	@dot -Tpng $< -o $@
 	@echo "  ✓  $*"
 
-# ── Mockup ────────────────────────────────────────────────────────────────────
+# ── Site ──────────────────────────────────────────────────────────────────────
 
-mockup: mockup.html
+site: diagrams
+	@python3 build.py
 
-mockup.html: $(PNGS) generate_mockup.py
-	@python3 generate_mockup.py
-	@echo "  ✓  mockup.html"
+serve: all
+	@cd dist && python3 -m http.server 3000
 
 # ── Clean ─────────────────────────────────────────────────────────────────────
 
 clean:
-	@rm -f diagrams/rendered/*.png mockup.html
+	@rm -rf dist/ diagrams/rendered/
 	@echo "  cleaned"
