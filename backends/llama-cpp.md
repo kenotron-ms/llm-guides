@@ -10,7 +10,6 @@
 ---
 
 ![Backend Selector — Decision Schematic](../diagrams/rendered/backend_selector.png)
-*[view / edit source](https://mermaid.live/edit#pako:TZJRT8IwFIX/ypW50TB0qC/0QQMbkCWdYBDUjD3UtUhDt86uVZPBf3dzmaxNmpxz7v3a3LREiWIcYbST6jvZU23g2d9mUK3xRfSypwaYggAyztlDfAmDwT1Myvk6AM0/rdCVe2rKJ3V2fOPFEUi4ikgIK2OZUHE3flRH8MrQSiMGtuAariHXitnECJW1JO9M8svHTeAHY1AawuDWdV/7bZV/rtqQ6IuQMO4G9U3Ei6SkKb1K8jzusutwWj5ZkRyg4MbmDhhOUxgvgxY/PeMXJFr8ceJuVDNm5cxKCfPlGvrgVWeiMqOVbCGzzky8rlU3L8g2a7xqXhjjd/XTyA3pKuJ11eI/a3QiaVH4fAeVBzshJe4N6ZDecKeoHnLguHdHRy4bOYmSSuMed+u9zZCDUq5TKhjCJTJ7ntafgFF9QCcH2ZxRw31BPzRNETba8tMv)*
 
 ## Installation
 

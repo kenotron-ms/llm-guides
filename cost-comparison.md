@@ -20,7 +20,6 @@ Prices and benchmarks current as of **April 2026**. All prices USD.
 | Best raw quality at any cost | No (for now) | **Maybe** |
 
 ![Local / Cloud Fallback — Flow Schematic](diagrams/rendered/local_cloud_fallback.png)
-*[view / edit source](https://mermaid.live/edit#pako:fZNfb9owFMW/ylX60kr8DXRV/bCJkgJTYatCNWkFHox9IRaOndlOO4nw3WeS0JU+NH7Jyc3v5Nx7lX3ANMeABBupX1lCjYOnaKnAX4PLxWCLyoHBPzlat7qCZvMr3O0fjV4jSM2oBFQ800K55VIlzmWk3S6fJ9o6kmnj2glS6ZJDZXl3dChitJlW3IJQ4ESKBQwXsc4dgtO1bepDSe8pJU1pi2UZtOFnKfzNy3Q6W703fPImngdtAI3RpoBoP6JSrinb+YR0LZF/qyNEJfEbbQH3+zlKZA6Y1DmHweP3s3d+6AKeFzG63KjKt/7ofVkeai7U1sehxyF5u9EiQszmiDv41fPZfZoHkQp4CFvXZ2SM1GpVwSl1SQHj/2jc/Qwd+rk2LSornHjxg5ssZsI64yc2T33D0GuFFT6ezpr91jUMhPlbOwzL9cWXp5ZMuQaLq6uqPqrqlRi/F5OTqI0IIeWaas7LcoI1eS4n5/LZSz/LkxWT1NoIN/XaN0JKctHhvV7Ybfi+9A7JRXhD8UunwbTUhlxg53g+0NUCK7pLuzTEN7pPbzv89lPa56nZkHf8eWPxps967CMbNIIUTUoFD8g+cAmmx/+HU7MLDo0gzzh1GAm6NTQNiDM5Hv4B)*
 
 ---
 

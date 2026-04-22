@@ -13,7 +13,6 @@
 ## When to Use vLLM
 
 ![vLLM Backend Decision — Flow Schematic](../diagrams/rendered/vllm_decision.png)
-*[view / edit source](https://mermaid.live/edit#pako:VVJdT8IwFP0rN+VFI+hQY6QPGliBkGzEqBAM+lC3C1vs1tm1fm38dzvnZLZv5+Pe05MWJJAhEko2Qr4HEVca7tljCvYMD9ZzxBB4Cp7nQ47qDdX10yH0elcwKnwjdJwJhECmgVEKUw3GivLrXe0fVcLyAfMS3GJ6swD9mWFDuj/kfDljsyG4CzYsYemt3+yip7Zg6DPwZ2eOszqqBG3KlWluElRQaW5XJXjuWgie8OMgy/4PyaqYd7GIbdRK1843lyWwwucfoCMlzTbKjIYTeOY6iOJ02+Rl+8c0Mdiff1xMp4sJvBqe6vjLVpbYTkVjHe+tzerxrxVGk/6F3Ta5uazn1vTSo5QqzG3DNeC5LaCGAsHznOEGahg2sRC00+d9fordXCv5grRzzgdOOOgGUkhFO+hU9zElXWJ7S3gcEloQHWFSfYCQqxey6xKThVwji/lW8YRQrQzuvgE=)*
 
 | Use Case | vLLM | llama.cpp/Ollama |
 |----------|------|----------------|

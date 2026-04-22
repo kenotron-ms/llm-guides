@@ -39,7 +39,6 @@ unsloth/gemma-4-31B-it-GGUF
 ## Picking the Right Variant
 
 ![Gemma 4 Variant Selector — Hardware Schematic](../diagrams/rendered/gemma4_variant.png)
-*[view / edit source](https://mermaid.live/edit#pako:fZNfb5swFMW/ypXzsqnJyr8QwsOm0HTNQzO13bSX0ocbfJNYMSbDpF2VZp99NpC0o9JAwvLhnp/PtWHPsoITi9lSFk/ZGssKfkxTBeaafLi/ojxHCCDdeY4bwFZkG0B4xFKgqh4+wmDwGZL95BGFxIUkuJvM4Rx+muHLIVUNJrFVL9ekNVRrVDCEq+QFLr3kPmXmCbdBmqo/vlHNeLMuFBnEjTAP4itK2cNbzLBO4kcNI0gCCwmOkGEDucZtVWwNwJbZTB1I1EDc4ZESHSmRpYw+tZwp6Y0B9UERlgNZaC1NFx2YGzY0z6lpcy80MC9MBpNTLDdseAnpCvSWiJ//2qEU1TMsUKLKul16TssMaubFfkpKExQlzItLu7O29KIu/W5xcAa0XIpMkMqe6wxvS+b4G9r1zDvfNfl895Rt1GSbidXaxmsLO4GC6KzpzndnR3tkNjj5atpP1bd3+9OYzfHGcaxzlLIVzIm9UyKj5II3c5P9n6nvmqnE0nwJR2H2qjRaJlHrKS2h5sJSSBn3PO7wgPq6KosNxb3xYjhehP2skEUZ98ixd8dtFm29LrrovXoDHDt8/F9vnad1O9z3Pffk9kZIodN1sz7LqcxRcBbvWbWm3P6EHMsNO/TZbsuxoqnAVYk5i6tyR4e/)*
 
 ### 26B-A4B vs 31B — Which to Pick?
 
