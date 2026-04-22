@@ -1,0 +1,13 @@
+{
+  "name": "local-llm-guides",
+  "version": "1.0.0",
+  "description": "Static site generator for local-llm-guides docs",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js && echo '\\nServing at http://localhost:3000' && cd dist && python3 -m http.server 3000"
+  },
+  "dependencies": {
+    "marked": "^12.0.0",
+    "highlight.js": "^11.10.0"
+  }
+}
