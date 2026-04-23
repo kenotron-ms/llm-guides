@@ -24,7 +24,7 @@ PLAIN_TEXT = (
     "Cost Comparison: Local Hardware vs Cheap Cloud APIs. "
     "Practical cost and benchmark analysis — DeepSeek, Kimi, GLM, Mistral. "
     "Interactive TCO calculator, break-even analysis, quality vs price scatter chart. "
-    "Hardware: Mac Mini M4 Pro, Mac Studio M4 Max, RTX 3090, RTX 4090, RTX 5090. "
+    "Hardware: Mac Mini M4 Pro, Mac Studio M4 Max, RTX 3090, RTX 4090, RTX 5090, AMD Ryzen AI Max+ 395, NVIDIA DGX Spark. "
     "APIs: GLM-4.5 Airx, Devstral Small, Mistral Small 3.2, DeepSeek V3, DeepSeek R1, "
     "Kimi K2, Kimi K2.5. Prices April 2026."
 )
@@ -301,8 +301,11 @@ def build_cost_comparison_html() -> str:
   letter-spacing: .04em;
   white-space: nowrap;
 }
-.cc-badge.eu { background: rgba(37,99,235,.12); color: #1d4ed8; }
-.cc-badge.cn { background: rgba(234,88,12,.12); color: #c2410c; }
+.cc-badge.mistral  { background: rgba(37,99,235,.12); color: #1d4ed8; }
+.cc-badge.deepseek { background: rgba(124,58,237,.12); color: #6d28d9; }
+.cc-badge.kimi     { background: rgba(8,145,178,.12);  color: #0e7490; }
+.cc-badge.glm      { background: rgba(217,119,6,.12);  color: #b45309; }
+
 
 .cc-qwrap { display: inline-flex; align-items: center; gap: 6px; }
 .cc-qbar  {
@@ -457,8 +460,10 @@ def build_cost_comparison_html() -> str:
   <p class="cc-chart-desc">
     Assuming 2,048 input + 512 output tokens per request, sorted cheapest &#8594; most expensive.
     <span style="color:#16a34a;font-weight:600">&#9679; Green = local</span> (zero marginal cost once hardware purchased),
-    <span style="color:#2563eb;font-weight:600">&#9679; blue = European</span> (Mistral),
-    <span style="color:#ea580c;font-weight:600">&#9679; orange = Chinese</span> (DeepSeek / Kimi / GLM).
+    <span style="color:#2563eb;font-weight:600">&#9679; Blue = Mistral</span>,
+    <span style="color:#7c3aed;font-weight:600">&#9679; violet = DeepSeek</span>,
+    <span style="color:#0891b2;font-weight:600">&#9679; teal = Kimi</span>,
+    <span style="color:#d97706;font-weight:600">&#9679; amber = GLM</span>.
   </p>
   <div class="cc-chart-wrap" style="height:470px">
     <canvas id="cc-ch-cost1k"></canvas>
@@ -536,19 +541,19 @@ def build_cost_comparison_html() -> str:
 
   /* ── Data ─────────────────────────────────────────────────────────────────── */
   var APIS = [
-    {id:'glm-airx',    name:'GLM-4.5 Airx',        inp:0.020, out:0.060, quality:70, ctx:'128K', params:'106B/12B MoE',  open:true,  lic:'Apache 2.0',  type:'cn'},
-    {id:'devstral',    name:'Devstral Small',        inp:0.060, out:0.120, quality:76, ctx:'128K', params:'24B dense',    open:true,  lic:'Apache 2.0',  type:'eu'},
-    {id:'mistral-sm',  name:'Mistral Small 3.2',     inp:0.075, out:0.200, quality:78, ctx:'128K', params:'24B dense',    open:true,  lic:'Apache 2.0',  type:'eu'},
-    {id:'glm-air',     name:'GLM-4.5 Air',           inp:0.160, out:1.070, quality:74, ctx:'128K', params:'106B/12B MoE', open:true,  lic:'Apache 2.0',  type:'cn'},
-    {id:'ds-v3-hit',   name:'DeepSeek V3 (cached)',  inp:0.070, out:1.100, quality:82, ctx:'128K', params:'671B/37B MoE', open:true,  lic:'MIT',         type:'cn'},
-    {id:'ds-v3',       name:'DeepSeek V3',           inp:0.270, out:1.100, quality:82, ctx:'128K', params:'671B/37B MoE', open:true,  lic:'MIT',         type:'cn'},
-    {id:'kimi-k2',     name:'Kimi K2',               inp:0.150, out:2.000, quality:83, ctx:'128K', params:'~1T/32B MoE',  open:true,  lic:'MIT',         type:'cn'},
-    {id:'mistral-med', name:'Mistral Medium 3',       inp:0.400, out:2.000, quality:80, ctx:'128K', params:'~56B dense',   open:true,  lic:'Apache 2.0',  type:'eu'},
-    {id:'glm-std',     name:'GLM-4.5 Standard',      inp:0.480, out:1.920, quality:86, ctx:'128K', params:'355B/32B MoE', open:true,  lic:'Apache 2.0',  type:'cn'},
-    {id:'mistral-lg',  name:'Mistral Large 3',        inp:0.500, out:1.500, quality:83, ctx:'128K', params:'~123B MoE',    open:true,  lic:'Apache 2.0',  type:'eu'},
-    {id:'ds-r1-hit',   name:'DeepSeek R1 (cached)',  inp:0.140, out:2.190, quality:90, ctx:'64K',  params:'671B/37B MoE', open:true,  lic:'MIT',         type:'cn'},
-    {id:'ds-r1',       name:'DeepSeek R1',           inp:0.550, out:2.190, quality:90, ctx:'64K',  params:'671B/37B MoE', open:true,  lic:'MIT',         type:'cn'},
-    {id:'kimi-k25',    name:'Kimi K2.5',             inp:0.600, out:2.800, quality:87, ctx:'262K', params:'~1T/32B MoE',  open:false, lic:'Proprietary', type:'cn'}
+    {id:'glm-airx',    name:'GLM-4.5 Airx',        inp:0.020, out:0.060, quality:70, ctx:'128K', params:'106B/12B MoE',  open:true,  lic:'Apache 2.0',  provider:'glm'},
+    {id:'devstral',    name:'Devstral Small',        inp:0.060, out:0.120, quality:76, ctx:'128K', params:'24B dense',    open:true,  lic:'Apache 2.0',  provider:'mistral'},
+    {id:'mistral-sm',  name:'Mistral Small 3.2',     inp:0.075, out:0.200, quality:78, ctx:'128K', params:'24B dense',    open:true,  lic:'Apache 2.0',  provider:'mistral'},
+    {id:'glm-air',     name:'GLM-4.5 Air',           inp:0.160, out:1.070, quality:74, ctx:'128K', params:'106B/12B MoE', open:true,  lic:'Apache 2.0',  provider:'glm'},
+    {id:'ds-v3-hit',   name:'DeepSeek V3 (cached)',  inp:0.070, out:1.100, quality:82, ctx:'128K', params:'671B/37B MoE', open:true,  lic:'MIT',         provider:'deepseek'},
+    {id:'ds-v3',       name:'DeepSeek V3',           inp:0.270, out:1.100, quality:82, ctx:'128K', params:'671B/37B MoE', open:true,  lic:'MIT',         provider:'deepseek'},
+    {id:'kimi-k2',     name:'Kimi K2',               inp:0.150, out:2.000, quality:83, ctx:'128K', params:'~1T/32B MoE',  open:true,  lic:'MIT',         provider:'kimi'},
+    {id:'mistral-med', name:'Mistral Medium 3',       inp:0.400, out:2.000, quality:80, ctx:'128K', params:'~56B dense',   open:true,  lic:'Apache 2.0',  provider:'mistral'},
+    {id:'glm-std',     name:'GLM-4.5 Standard',      inp:0.480, out:1.920, quality:86, ctx:'128K', params:'355B/32B MoE', open:true,  lic:'Apache 2.0',  provider:'glm'},
+    {id:'mistral-lg',  name:'Mistral Large 3',        inp:0.500, out:1.500, quality:83, ctx:'128K', params:'~123B MoE',    open:true,  lic:'Apache 2.0',  provider:'mistral'},
+    {id:'ds-r1-hit',   name:'DeepSeek R1 (cached)',  inp:0.140, out:2.190, quality:90, ctx:'64K',  params:'671B/37B MoE', open:true,  lic:'MIT',         provider:'deepseek'},
+    {id:'ds-r1',       name:'DeepSeek R1',           inp:0.550, out:2.190, quality:90, ctx:'64K',  params:'671B/37B MoE', open:true,  lic:'MIT',         provider:'deepseek'},
+    {id:'kimi-k25',    name:'Kimi K2.5',             inp:0.600, out:2.800, quality:87, ctx:'262K', params:'~1T/32B MoE',  open:false, lic:'Proprietary', provider:'kimi'}
   ];
 
   var HW = [
@@ -558,7 +563,9 @@ def build_cost_comparison_html() -> str:
     {id:'mac-studio64', name:'Mac Studio M4 Max (64 GB)', monthly:82,  upfront:2799, vram:64,  tps:55,  runs:'Qwen3.6 35B-A3B Q8 \u00b7 122B Q2'},
     {id:'rtx3090',      name:'RTX 3090 build (24 GB)',    monthly:56,  upfront:1400, vram:24,  tps:65,  runs:'Qwen3.5 27B Q4 \u00b7 Gemma 4 26B Q4'},
     {id:'rtx4090',      name:'RTX 4090 build (24 GB)',    monthly:72,  upfront:1800, vram:24,  tps:75,  runs:'Qwen3.5 27B Q4 \u00b7 Gemma 4 26B Q4'},
-    {id:'rtx5090',      name:'RTX 5090 build (32 GB)',    monthly:102, upfront:2700, vram:32,  tps:100, runs:'Qwen3.6 35B-A3B Q4 \u2014 full GPU offload'}
+    {id:'rtx5090',      name:'RTX 5090 build (32 GB)',    monthly:102, upfront:2700, vram:32,  tps:100, runs:'Qwen3.6 35B-A3B Q4 \u2014 full GPU offload'},
+    {id:'amd-max395',   name:'AMD Ryzen AI Max+ 395 (128 GB)', monthly:87,  upfront:3000, vram:128, tps:50,  runs:'Qwen3.6 35B-A3B Q6 \u00b7 Qwen3.6-27B Q8 \u2014 Strix Halo APU'},
+    {id:'dgx-spark',    name:'NVIDIA DGX Spark (128 GB)',       monthly:139, upfront:4699, vram:128, tps:80,  runs:'70B Q4 \u00b7 Qwen3.6-27B Q8 \u00b7 up to 200B (GB10 Blackwell)'}
   ];
 
   /* ── Helpers ──────────────────────────────────────────────────────────────── */
@@ -647,12 +654,12 @@ def build_cost_comparison_html() -> str:
     var values = [0].concat(sorted.map(cost1k));
     var bgCols = ['rgba(22,163,74,0.85)'].concat(
       sorted.map(function (a) {
-        return a.type === 'eu' ? 'rgba(37,99,235,0.82)' : 'rgba(234,88,12,0.82)';
+        var pc={deepseek:'rgba(124,58,237,0.82)',kimi:'rgba(8,145,178,0.82)',glm:'rgba(217,119,6,0.82)',mistral:'rgba(37,99,235,0.82)'}; return pc[a.provider]||'rgba(150,150,150,0.82)';
       })
     );
     var bdCols = ['#16a34a'].concat(
       sorted.map(function (a) {
-        return a.type === 'eu' ? '#2563eb' : '#ea580c';
+        var pc={deepseek:'#7c3aed',kimi:'#0891b2',glm:'#d97706',mistral:'#2563eb'}; return pc[a.provider]||'#888';
       })
     );
 
@@ -804,9 +811,13 @@ def build_cost_comparison_html() -> str:
 
   /* ── Chart 3: Quality vs Price — bubble chart (static) ───────────────────── */
   (function () {
-    var eu = APIS.filter(function (a) { return a.type === 'eu'; })
-                 .map(function (a) { return {x: cost1k(a), y: a.quality, r: 8, name: a.name}; });
-    var cn = APIS.filter(function (a) { return a.type === 'cn'; })
+    var eu = APIS.filter(function (a) { return a.provider === 'mistral'; })
+        .map(function (a) { return { x: cost1k(a), y: a.quality, r: 8, _name: a.name }; });
+
+    var ds = APIS.filter(function (a) { return a.provider === 'deepseek'; })
+        .map(function (a) { return { x: cost1k(a), y: a.quality, r: 8, _name: a.name }; });
+    var kimi = APIS.filter(function (a) { return a.provider === 'kimi'; })
+        .map(function (a) { return { x: cost1k(a), y: a.quality, r: 8, _name: a.name }; });
                  .map(function (a) { return {x: cost1k(a), y: a.quality, r: 8, name: a.name}; });
 
     var ctx = document.getElementById('cc-ch-qual').getContext('2d');
@@ -814,20 +825,10 @@ def build_cost_comparison_html() -> str:
       type: 'bubble',
       data: {
         datasets: [
-          {
-            label: 'European (Mistral)',
-            data: eu,
-            backgroundColor: 'rgba(37,99,235,0.78)',
-            borderColor: '#2563eb',
-            borderWidth: 1.5
-          },
-          {
-            label: 'Chinese (DeepSeek / Kimi / GLM)',
-            data: cn,
-            backgroundColor: 'rgba(234,88,12,0.78)',
-            borderColor: '#ea580c',
-            borderWidth: 1.5
-          }
+          {label:'Mistral',  data:eu,   backgroundColor:'rgba(37,99,235,0.78)',  borderColor:'#2563eb', borderWidth:1.5},
+          {label:'DeepSeek', data:ds,   backgroundColor:'rgba(124,58,237,0.78)', borderColor:'#7c3aed', borderWidth:1.5},
+          {label:'Kimi',     data:kimi, backgroundColor:'rgba(8,145,178,0.78)',  borderColor:'#0891b2', borderWidth:1.5},
+          {label:'GLM',      data:glm,  backgroundColor:'rgba(217,119,6,0.78)',  borderColor:'#d97706', borderWidth:1.5}
         ]
       },
       options: {
@@ -891,7 +892,7 @@ def build_cost_comparison_html() -> str:
       /* normalise quality 65-95 to 0-100% for the bar */
       var qp  = Math.min(100, Math.max(0, Math.round((qn - 65) / 30 * 100)));
       var badge = '<span class="cc-badge ' + a.type + '">' +
-        (a.type === 'eu' ? 'European' : 'Chinese') + '</span>';
+        ({'mistral':'Mistral','deepseek':'DeepSeek','kimi':'Kimi','glm':'GLM'}[a.provider]||a.provider) + '</span>';
       var openHtml = a.open
         ? '<span class="cc-open-yes">Open &middot; ' + esc(a.lic) + '</span>'
         : '<span class="cc-open-no">Closed</span>';
