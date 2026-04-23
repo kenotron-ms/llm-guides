@@ -1074,14 +1074,31 @@ def main():
     # Process all pages and collect search index entries
     index_entries = []
 
+    # Import the rich interactive cost-comparison content generator
+    try:
+        from cost_comparison_content import (
+            build_cost_comparison_html,
+            TOC_TOKENS as CC_TOC_TOKENS,
+            PLAIN_TEXT as CC_PLAIN_TEXT,
+        )
+        _cc_available = True
+    except ImportError:
+        _cc_available = False
+
     for page in ALL_PAGES:
         md_path = SRC_DIR / page["file"]
         if not md_path.exists():
             print(f"  WARN  {page['file']} not found — skipping")
             continue
 
-        md_text = md_path.read_text(encoding="utf-8")
-        content_html, toc_tokens, plain, headings = process_markdown(md_text, page["file"])
+        if _cc_available and page["slug"] == "cost-comparison":
+            content_html = build_cost_comparison_html()
+            toc_tokens   = CC_TOC_TOKENS
+            plain        = CC_PLAIN_TEXT
+            headings     = [t["name"] for t in CC_TOC_TOKENS]
+        else:
+            md_text = md_path.read_text(encoding="utf-8")
+            content_html, toc_tokens, plain, headings = process_markdown(md_text, page["file"])
 
         index_entries.append({
             "slug":     page["slug"],
