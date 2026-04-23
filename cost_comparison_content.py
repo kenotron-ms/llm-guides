@@ -811,14 +811,11 @@ def build_cost_comparison_html() -> str:
 
   /* ── Chart 3: Quality vs Price — bubble chart (static) ───────────────────── */
   (function () {
-    var eu = APIS.filter(function (a) { return a.provider === 'mistral'; })
-        .map(function (a) { return { x: cost1k(a), y: a.quality, r: 8, _name: a.name }; });
-
-    var ds = APIS.filter(function (a) { return a.provider === 'deepseek'; })
-        .map(function (a) { return { x: cost1k(a), y: a.quality, r: 8, _name: a.name }; });
-    var kimi = APIS.filter(function (a) { return a.provider === 'kimi'; })
-        .map(function (a) { return { x: cost1k(a), y: a.quality, r: 8, _name: a.name }; });
-                 .map(function (a) { return {x: cost1k(a), y: a.quality, r: 8, name: a.name}; });
+    function mkB(a) { return { x: cost1k(a), y: a.quality, r: 8, name: a.name }; }
+    var eu   = APIS.filter(function(a){return a.provider==='mistral';}).map(mkB);
+    var ds   = APIS.filter(function(a){return a.provider==='deepseek';}).map(mkB);
+    var kimi = APIS.filter(function(a){return a.provider==='kimi';}).map(mkB);
+    var glm  = APIS.filter(function(a){return a.provider==='glm';}).map(mkB);
 
     var ctx = document.getElementById('cc-ch-qual').getContext('2d');
     new Chart(ctx, {
