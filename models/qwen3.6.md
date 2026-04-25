@@ -92,7 +92,7 @@ presence_penalty   = 1.5
 repeat_penalty     = 1.0
 ```
 
-**Recommended max output**: 32,768 tokens. Thinking traces can be long; set `--reasoning on` in llama.cpp to properly handle `<think>` blocks.
+**Recommended max output**: 32,768 tokens. Thinking traces can be long — `--jinja` (already in the commands below) enables proper `<think>` block handling.
 
 ### Quick Start
 
@@ -123,7 +123,6 @@ llama-server \
   --alias "qwen3.6-27b" \
   --ctx-size 65536 \
   --n-gpu-layers 999 \
-  --cache-ram 4096 \
   --temp 0.6 \
   --top-p 0.95 \
   --top-k 20 \
@@ -132,7 +131,6 @@ llama-server \
   --repeat-penalty 1.0 \
   --port 8001 \
   --jinja \
-  --reasoning on \
   --chat-template-kwargs '{"enable_thinking":true}'
 ```
 
