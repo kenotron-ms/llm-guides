@@ -123,6 +123,7 @@ llama-server \
   --alias "qwen3.6-27b" \
   --ctx-size 65536 \
   --n-gpu-layers 999 \
+  --cache-ram 4096 \
   --temp 0.6 \
   --top-p 0.95 \
   --top-k 20 \
@@ -131,7 +132,7 @@ llama-server \
   --repeat-penalty 1.0 \
   --port 8001 \
   --jinja \
-  --chat-template-kwargs '{"enable_thinking":true}'
+  --reasoning on
 ```
 
 ```bash
@@ -149,10 +150,10 @@ llama-server \
   --repeat-penalty 1.0 \
   --port 8001 \
   --jinja \
-  --chat-template-kwargs '{"enable_thinking":false}'
+  --reasoning off
 ```
 
-> **Windows PowerShell** — escape inner quotes: `--chat-template-kwargs '{\"enable_thinking\":true}'`
+> **Windows PowerShell** — quote `--reasoning on` as-is; no escaping needed for thinking toggle.
 
 <!-- /when -->
 
@@ -353,14 +354,12 @@ repetition_penalty = 1.0
 ### Enabling / Disabling Thinking
 
 ```bash
-# llama.cpp / llama-server flags (Linux/macOS)
---chat-template-kwargs '{"enable_thinking":true}'
---chat-template-kwargs '{"enable_thinking":false}'
-
-# Windows PowerShell
---chat-template-kwargs "{\"enable_thinking\":true}"
---chat-template-kwargs "{\"enable_thinking\":false}"
+# llama.cpp / llama-server — preferred (llama.cpp ≥ b8920)
+--reasoning on   # enable thinking
+--reasoning off  # disable thinking
 ```
+
+> `--chat-template-kwargs '{"enable_thinking":true}'` still works but is deprecated in ≥ b8920. Use `--reasoning on/off` instead.
 
 Via vLLM API (pass in chat template extras):
 
@@ -410,7 +409,7 @@ export LLAMA_CACHE="./models"
   --top-p 0.95 \
   --top-k 20 \
   --min-p 0.0 \
-  --chat-template-kwargs '{"enable_thinking":true}'
+  --reasoning on
 
 # Thinking mode, precise coding
 ./llama.cpp/llama-cli \
@@ -419,7 +418,7 @@ export LLAMA_CACHE="./models"
   --top-p 0.95 \
   --top-k 20 \
   --min-p 0.0 \
-  --chat-template-kwargs '{"enable_thinking":true}'
+  --reasoning on
 ```
 
 #### llama-server (non-thinking, OpenAI API)
@@ -435,7 +434,8 @@ export LLAMA_CACHE="./models"
   --top-k 20 \
   --min-p 0.0 \
   --port 8001 \
-  --chat-template-kwargs '{"enable_thinking":false}'
+  --jinja \
+  --reasoning off
 ```
 
 #### llama-server (thinking, vision, full featured)
@@ -452,7 +452,8 @@ export LLAMA_CACHE="./models"
   --top-k 20 \
   --min-p 0.0 \
   --port 8001 \
-  --chat-template-kwargs '{"enable_thinking":true}'
+  --jinja \
+  --reasoning on
 ```
 
 <!-- /when -->
@@ -588,52 +589,54 @@ model = AutoModelForCausalLM.from_pretrained(
 
 Source: [Qwen3.6 release blog](https://www.alibabacloud.com/blog/qwen3-6-35b-a3b-agentic-coding-power-now-open-to-all_603043)
 
-    ---
+---
 
-    ## Known Issues
+## Known Issues
 
-    ### `unknown model architecture: 'qwen35'` (llama.cpp)
+### Both errors come from the same stale build
 
-    ```
-    llama_model_load: error loading model: error loading model architecture: 'qwen35'
-    ```
+If you see either of these, your llama.cpp is too old:
 
-    **Cause:** Your llama.cpp binary is older than build b8233. The `qwen35` architecture (Hybrid Gated DeltaNet) was added in [PR #19468](https://github.com/ggml-org/llama.cpp/pull/19468), with the dense 27B variant specifically requiring **b8233 or later** (March 7, 2026).
+```
+llama_model_load: error loading model: error loading model architecture: 'qwen35'
+```
+```
+error: invalid argument: --reasoning
+```
 
-    **Fix:** Update llama.cpp.
+Both `qwen35` architecture support and the `--reasoning` flag were added after Homebrew bottle `7060`. The fix is a single upgrade:
 
-    ```bash
-    # From source
-    cd llama.cpp
-    git pull
-    cmake -B build -DGGML_METAL=ON   # or -DGGML_CUDA=ON on Linux
-    cmake --build build --config Release -j$(nproc)
+```bash
+brew upgrade llama.cpp   # 7060 → 8920
+llama-server --version   # verify: version: 8920
+```
 
-    # macOS Homebrew
-    brew upgrade llama.cpp
+**From source / Linux:** minimum build [b8233](https://github.com/ggml-org/llama.cpp/releases/tag/b8233) for `qwen35` arch; [b8920](https://github.com/ggml-org/llama.cpp/releases) for `--reasoning`.
 
-    # Or download a prebuilt binary ≥ b8233 from:
-    # https://github.com/ggml-org/llama.cpp/releases
-    ```
+```bash
+cd llama.cpp && git pull
+cmake -B build -DGGML_CUDA=ON   # or -DGGML_METAL=ON on macOS
+cmake --build build --config Release -j$(nproc)
+```
 
-    ---
+---
 
-    ### Ollama: HF GGUFs fail to load (even on Ollama 0.17.1+)
+### Ollama: HF GGUFs fail to load (even on Ollama 0.17.1+)
 
-    Ollama 0.17.1 added `qwen35` arch support, but HF-sourced GGUFs (unsloth, bartowski) do not load because the KV metadata encodes `attention.head_count_kv` as a **scalar**, while Ollama expects an **array**. Track fix at [ollama#14503](https://github.com/ollama/ollama/issues/14503).
+HF-sourced GGUFs (unsloth, bartowski) do not load in Ollama because the KV metadata encodes `attention.head_count_kv` as a **scalar**, while Ollama expects an **array**. Track fix at [ollama#14503](https://github.com/ollama/ollama/issues/14503).
 
-    **Workaround:** Use Ollama-native weights instead of HF GGUFs:
+**Workaround:** Use Ollama-native weights:
 
-    ```bash
-    ollama run qwen3.6:27b
-    ollama run qwen3.6:35b-a3b
-    ```
+```bash
+ollama run qwen3.6:27b
+ollama run qwen3.6:35b-a3b
+```
 
-    ---
+---
 
-    ### Vulkan backend: SSM layers fall back to CPU
+### Vulkan backend: SSM layers fall back to CPU
 
-    The `ggml_ssm_conv` and `ggml_ssm_scan` operations required by the DeltaNet layers are not yet implemented as Vulkan shaders. If you're on a GPU with only Vulkan support (no CUDA, no Metal), the SSM layers will run on CPU. CUDA and Metal are fully accelerated. Track at [llama.cpp#19957](https://github.com/ggml-org/llama.cpp/issues/19957).
+`ggml_ssm_conv` and `ggml_ssm_scan` (DeltaNet layers) are not yet implemented as Vulkan shaders. CUDA and Metal are fully accelerated. Track at [llama.cpp#19957](https://github.com/ggml-org/llama.cpp/issues/19957).
 
-    
-<!-- /when -->
+
+<!-- /when --><!-- /when -->
